@@ -12,7 +12,8 @@ public class BlockEncryption {
     public float[][] matrixI; //Inverse of the encrytion matrix
     private int encryptionSize; //Numer of the batch size
     private long publicKey;     
-    private final int numThreads; //number of threads
+    private int numThreads; //number of threads
+    private final int maxNumThreads;
     
     
     //Constructor
@@ -22,7 +23,8 @@ public class BlockEncryption {
         this.encryptionSize = encryptionSize;
         this.matrixE = EncryptMatrix.createEncryptionMatrix(this.publicKey , this.encryptionSize);
         this.matrixI = EncryptMatrix.inverseMatrix(matrixE);
-        this.numThreads = 10;
+        this.numThreads = 0;
+        this.maxNumThreads = 10;
     }
 
 
@@ -37,7 +39,6 @@ public class BlockEncryption {
     {
 
         String pan = ThreadExecution(originalString, matrixE);
-        System.out.println(pan);
         return pan;
     }
 
@@ -67,31 +68,53 @@ public class BlockEncryption {
     private String ThreadExecution(String mesasge, float[][] decripter)
     {
 
-
+        
         String res = "";
-        String[] bathces = divideString(mesasge, this.numThreads);
-        LinearTransform[] threads = new LinearTransform[this.numThreads];
+        String[] bathces = divideString(mesasge);
+        LinearTransform[] threads = new LinearTransform[this.numThreads];   
+        int secondIndex = 1;
+        int numThreadsBatches = 1;
+        int iterator = 0;
+        boolean flag = false;
 
+        if(this.numThreads > this.maxNumThreads)
+        {
+            secondIndex = Math.ceilDiv(this.maxNumThreads, this.numThreads);
+            numThreadsBatches = this.maxNumThreads/this.numThreads;
+            flag = true;
+        }
 
+        
+        for (int j = 0; j < secondIndex; j++) {
         //Creation of the threads
-        for (int i = 0; i < numThreads; i++) {
-            threads[i] = new LinearTransform(decripter, bathces[i]);
-            threads[i].start();
-        }
-
-        // Wait for all threads to finish
-        try {
-            for (LinearTransform thread : threads) {
-                thread.join();
+            
+            if(flag){
+                iterator = Math.max( numThreadsBatches ,this.maxNumThreads%this.numThreads);
+            }else{
+                iterator = this.numThreads;
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+            
+            for (int i = 0; i < iterator; i++) {
+                threads[i] = new LinearTransform(decripter, bathces[i]);
+                threads[i].start();
+            }
+
+
+            // Wait for all threads to finish
+            try {
+                for (LinearTransform thread : threads) {
+                    thread.join();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Joining the results
+            for(LinearTransform thread : threads) res +=  thread.getResult();
+
+            numThreadsBatches -= this.maxNumThreads;
         }
-
-
-        // Joining the results
-        for(LinearTransform thread : threads)
-            res +=  thread.getResult();
 
         return res;
 
@@ -108,20 +131,28 @@ public class BlockEncryption {
     * @param n number of batches
     * @return array of the batches of the string
     */
-    public String[] divideString(String inputString, int n) {
+    public String[] divideString(String inputString) {
         
-        String[] res = new String[n];
-        int stringLen = inputString.length();
-        int needed = stringLen%n;
-    
-        for(int i = 0 ; i < needed; i++) inputString += " "; //Filling of the missing values
-        int bathSize = inputString.length()/n; 
 
-        //Creation of the batches
-        for(int i = 0 ; i < n-1; i++) res[i] = inputString.substring(i*bathSize, (i+1)*(bathSize));
+        int stringLen = inputString.length();
+        int needed = stringLen%this.encryptionSize ;
+        if(needed > 0)needed = (this.encryptionSize - needed);
         
+
+        for(int i = 0 ; i < needed; i++) inputString += " "; //Filling of the missing values
+        stringLen = inputString.length();
+
+        this.numThreads = stringLen/this.encryptionSize  + (stringLen%this.encryptionSize > 0 ? 1 : 0);
+
+        String[] res = new String[this.numThreads];
+        for(int i = 0 ; i < this.numThreads; i++) res[i] = inputString.substring(i*this.encryptionSize, (i+1)*(this.encryptionSize));
+    
+        
+
         return res;
     }
+
+
 
 
 }

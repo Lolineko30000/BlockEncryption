@@ -71,9 +71,11 @@ class LinearTransform extends Thread {
     
     public static String asciiToString(float[] asciiValues) {
         StringBuilder stringBuilder = new StringBuilder();
+        char character;
 
         for (float asciiValue : asciiValues) {
-            char character = (char)((int)asciiValue);
+    
+            character = (char)(round(asciiValue));
             stringBuilder.append(character);
         }
 
@@ -133,4 +135,11 @@ class LinearTransform extends Thread {
 
         return resultMatrix;
     }
+
+
+    private static int round(float n)
+    {
+        return (n > (int)n + 0.5) ? (int)(n+1) : (int)n; 
+    }
+
 }
