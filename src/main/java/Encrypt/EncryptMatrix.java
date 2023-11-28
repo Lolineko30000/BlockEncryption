@@ -103,7 +103,6 @@ public class EncryptMatrix {
             if (det != 0) {
                 resultMatrix = matrix;
             } else {
-                System.out.println("14");
                 resultMatrix = null;
             }
         } while (resultMatrix == null);

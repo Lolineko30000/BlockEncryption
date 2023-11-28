@@ -17,9 +17,9 @@ public class BlockEncryption {
     
     
     //Constructor
-    public BlockEncryption(long publicKey, int encryptionSize )
+    public BlockEncryption(String key, int encryptionSize )
     {
-        this.publicKey = publicKey;
+        this.publicKey = PasswordHash.Hash(key);
         this.encryptionSize = encryptionSize;
         this.matrixE = EncryptMatrix.createEncryptionMatrix(this.publicKey , this.encryptionSize);
         this.matrixI = EncryptMatrix.inverseMatrix(matrixE);
@@ -37,9 +37,7 @@ public class BlockEncryption {
     */
     public String Encrypt(String originalString)
     {
-
-        String pan = ThreadExecution(originalString, matrixE);
-        return pan;
+        return ThreadExecution(originalString, matrixE);
     }
 
 
@@ -71,32 +69,28 @@ public class BlockEncryption {
         
         String res = "";
         String[] bathces = divideString(mesasge);
-        LinearTransform[] threads = new LinearTransform[this.numThreads];   
+        LinearTransform[] threads;  
+        
         int secondIndex = 1;
-        int numThreadsBatches = 1;
-        int iterator = 0;
-        boolean flag = false;
+        int[] threadBatches;
 
-        if(this.numThreads > this.maxNumThreads)
-        {
-            secondIndex = Math.ceilDiv(this.maxNumThreads, this.numThreads);
-            numThreadsBatches = this.maxNumThreads/this.numThreads;
-            flag = true;
-        }
 
+        secondIndex = (this.numThreads/this.maxNumThreads) + ((this.numThreads%this.maxNumThreads > 0)? 1 : 0);
+        threadBatches = new int[secondIndex];
+
+        //Creation of the number of the batches
+        for(int j = 0; j < secondIndex;  j++) threadBatches[j] = maxNumThreads;
+        if(this.numThreads%this.maxNumThreads > 0) threadBatches[secondIndex-1] = this.numThreads%this.maxNumThreads;
+        
         
         for (int j = 0; j < secondIndex; j++) {
         //Creation of the threads
-            
-            if(flag){
-                iterator = Math.max( numThreadsBatches ,this.maxNumThreads%this.numThreads);
-            }else{
-                iterator = this.numThreads;
-            }
 
+
+            threads =  new LinearTransform[threadBatches[j]]; 
             
-            for (int i = 0; i < iterator; i++) {
-                threads[i] = new LinearTransform(decripter, bathces[i]);
+            for (int i = 0; i < threadBatches[j]; i++) {
+                threads[i] = new LinearTransform(decripter, bathces[j*maxNumThreads + i]);
                 threads[i].start();
             }
 
@@ -113,7 +107,6 @@ public class BlockEncryption {
             // Joining the results
             for(LinearTransform thread : threads) res +=  thread.getResult();
 
-            numThreadsBatches -= this.maxNumThreads;
         }
 
         return res;

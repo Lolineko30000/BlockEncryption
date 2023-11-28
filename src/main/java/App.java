@@ -7,30 +7,59 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import Encrypt.BlockEncryption;
+
 public class App {
-    private static final String HTML_FILE_PATH = "html/prueba.html"; 
+    private static final String HTML_FILE_PATH = "html/index.html"; 
 
     public static void main(final String[] args) {
         Undertow server = Undertow.builder().addHttpListener(8080, "localhost")
                 .setHandler(new HttpHandler() {
+
+
                     @Override
                     public void handleRequest(HttpServerExchange exchange) throws Exception {
-                        String message = exchange.getQueryParameters().get("mensaje") != null
-                                ? exchange.getQueryParameters().get("mensaje").getFirst()
-                                : null;
+                        
 
-                        if (message != null) {
-                            // Process the message and send a response
-                            String responseMessage = "Mensaje recibido desde el cliente: " + message;
+                        //PARAMETERS FOR THE ALGORITHM
+                        String key = exchange.getQueryParameters().get("key") != null ? exchange.getQueryParameters().get("key").getFirst() : null;
+                        String mode = exchange.getQueryParameters().get("mode") != null ? exchange.getQueryParameters().get("mode").getFirst() : null;
+                        String text = exchange.getQueryParameters().get("content") != null ? exchange.getQueryParameters().get("content").getFirst() : null;
+
+                        //Validation 
+                        if (key != null && mode != null && text != null) {
+                            
+
+                            
+                            String responseMessage = "wajaka forever";
+                            BlockEncryption en = new BlockEncryption(key, 10);
+                            
+
+                            //Call the algoritm 
+                            if(mode.equals("en")){
+                                responseMessage = en.Encrypt(text);
+                            }
+                            else if(mode.equals("de"))
+                            {
+                                responseMessage = en.Decrypt(text);
+                            }   
+
+                        
+                            //Request send
                             exchange.getResponseSender().send(responseMessage);
+
+
                         } else {
-                            // Serve the HTML page
                             String htmlContent = readHtmlFile();
                             exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
                             exchange.getResponseSender().send(htmlContent);
                         }
                     }
+
+
                 }).build();
+
+
         server.start();
     }
 
