@@ -27,7 +27,7 @@ The matrix will have tho form of a Lower matrix in order to simplify the search 
 
 For the matrix product calculation, we have created a thread for every calculation until a maximum of $l \in \mathbb{Z}$ threads at the same time executing, where the number l will prevent overloading the system and get enough performance improvement, then batches of at most $l$ threads will be excuting. 
 
-By default this number is 5 so the diagram ilustrates how the threas are cllad anthen joined. 
+By default this number is 5 so the diagram ilustrates how the threads are called and then joined. 
 
 ![Alt text](./img/paralleldiagram.png "Diagram  2")
 
