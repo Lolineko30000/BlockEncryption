@@ -5,9 +5,9 @@ A java implementation of the block encryption algorithm for large files using pa
 
 ### Mathematical model 
 
-Let $k \in \Z$ be the number of valid charachteres in the language we are going to encrypt. And $n \in \Z$, to make the encryption we create batches of n characters and turn it into a vector $B \in \mathbb{Z}_{k}^n$
+Let $k \in  \mathbb{Z}$ be the number of valid charachteres in the language we are going to encrypt. And $n \in  \mathbb{Z}$, to make the encryption we create batches of n characters and turn it into a vector $B \in \mathbb{Z}_{k}^n$
 
-We can then apply a linear map $A \in \mathbb{M}_{n \times n}(\mathbb{Z}_{k})$.
+We can then apply a linear map $A \in \mathbb{M}_{n \times n} (\mathbb{Z})$.
 This matrix will be created using a linear congruential generator whose seed would be the hash of the user password so we can recreate the matrix.
 
 
@@ -19,13 +19,13 @@ In general the algorithm follows the next diagram.
 ![Alt text](./img/diagram.png "Diagram")
 
 
-For the matrix dimension, a small number [10, 30] should be better hence it wont produce larger entries in the resultant vecotor. By default the dimension is 10, then the matrix $A$ is of the form $A \in \mathbb{M}_{10 \times 10}(\mathbb{Z}_{k})$
+For the matrix dimension, a small number [10, 30] should be better hence it wont produce larger entries in the resultant vecotor. By default the dimension is 10, then the matrix $A$ is of the form $A \in \mathbb{M}_{10 \times 10}(\mathbb{Z})$
 
 The matrix will have tho form of a Lower matrix in order to simplify the search for the matrix. 
 
 ### Parallel computing model 
 
-For the matrix product calculation, we have created a thread for every calculation until a maximum of $l \in \Z$ threads at the same time executing, where the number l will prevent overloading the system and get enough performance improvement, then batches of at most $l$ threads will be excuting. 
+For the matrix product calculation, we have created a thread for every calculation until a maximum of $l \in \mathbb{Z}$ threads at the same time executing, where the number l will prevent overloading the system and get enough performance improvement, then batches of at most $l$ threads will be excuting. 
 
 By default this number is 5 so the diagram ilustrates how the threas are cllad anthen joined. 
 
