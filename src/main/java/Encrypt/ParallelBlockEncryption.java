@@ -3,7 +3,7 @@ package Encrypt;
 
 
 
-public class BlockEncryption {
+public class ParallelBlockEncryption {
     
 
 
@@ -17,14 +17,14 @@ public class BlockEncryption {
     
     
     //Constructor
-    public BlockEncryption(String key, int encryptionSize )
+    public ParallelBlockEncryption(String key, int encryptionSize , int maxThreads )
     {
         this.publicKey = PasswordHash.Hash(key);
         this.encryptionSize = encryptionSize;
         this.matrixE = EncryptMatrix.createEncryptionMatrix(this.publicKey , this.encryptionSize);
         this.matrixI = EncryptMatrix.inverseMatrix(matrixE);
         this.numThreads = 0;
-        this.maxNumThreads = 10;
+        this.maxNumThreads = maxThreads;
     }
 
 
@@ -66,10 +66,11 @@ public class BlockEncryption {
     private String ThreadExecution(String mesasge, float[][] decripter)
     {
 
-        
+
+
         String res = "";
         String[] bathces = divideString(mesasge);
-        LinearTransform[] threads;  
+        ParallelLinearTransform[] threads;  
         
         int secondIndex = 1;
         int[] threadBatches;
@@ -83,21 +84,23 @@ public class BlockEncryption {
         if(this.numThreads%this.maxNumThreads > 0) threadBatches[secondIndex-1] = this.numThreads%this.maxNumThreads;
         
         
+
+        long startTime = System.currentTimeMillis();
         for (int j = 0; j < secondIndex; j++) {
         //Creation of the threads
 
 
-            threads =  new LinearTransform[threadBatches[j]]; 
+            threads =  new ParallelLinearTransform[threadBatches[j]]; 
             
             for (int i = 0; i < threadBatches[j]; i++) {
-                threads[i] = new LinearTransform(decripter, bathces[j*maxNumThreads + i]);
+                threads[i] = new ParallelLinearTransform(decripter, bathces[j*maxNumThreads + i]);
                 threads[i].start();
             }
 
 
             // Wait for all threads to finish
             try {
-                for (LinearTransform thread : threads) {
+                for (ParallelLinearTransform thread : threads) {
                     thread.join();
                 }
             } catch (InterruptedException e) {
@@ -105,9 +108,17 @@ public class BlockEncryption {
             }
 
             // Joining the results
-            for(LinearTransform thread : threads) res +=  thread.getResult();
+            for(ParallelLinearTransform thread : threads) res +=  thread.getResult();
 
         }
+
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        double seconds = executionTime / 1000.0;
+        
+        
+        System.out.println("Execution time: " + seconds + " seconds");
+        System.err.println("=========================================");
 
         return res;
 

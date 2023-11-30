@@ -1,6 +1,6 @@
 package Encrypt;
 
-class LinearTransform extends Thread {
+class ParallelLinearTransform extends Thread {
     
     
     private final float[][] matrixEncoder; //The matrix to decode or encode
@@ -11,7 +11,7 @@ class LinearTransform extends Thread {
 
     
     //Constructor of the class
-    public LinearTransform(float[][] Decoder,  String toDecode) {
+    public ParallelLinearTransform(float[][] Decoder,  String toDecode) {
         this.matrixEncoder = Decoder;
         this.toDecode = toDecode; 
         this.result = "";

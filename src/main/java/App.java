@@ -1,13 +1,18 @@
 import io.undertow.Undertow;
+import io.undertow.UndertowOptions;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
-import Encrypt.BlockEncryption;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
+import Encrypt.ParallelBlockEncryption;
 
 public class App {
     private static final String HTML_FILE_PATH = "html/index.html"; 
@@ -24,27 +29,54 @@ public class App {
                         //PARAMETERS FOR THE ALGORITHM
                         String key = exchange.getQueryParameters().get("key") != null ? exchange.getQueryParameters().get("key").getFirst() : null;
                         String mode = exchange.getQueryParameters().get("mode") != null ? exchange.getQueryParameters().get("mode").getFirst() : null;
-                        String text = exchange.getQueryParameters().get("content") != null ? exchange.getQueryParameters().get("content").getFirst() : null;
-
-                        //Validation 
-                        if (key != null && mode != null && text != null) {
-                            
-
-                            
-                            String responseMessage = "wajaka forever";
-                            BlockEncryption en = new BlockEncryption(key, 10);
-                            
-
-                            //Call the algoritm 
-                            if(mode.equals("en")){
-                                responseMessage = en.Encrypt(text);
-                            }
-                            else if(mode.equals("de"))
-                            {
-                                responseMessage = en.Decrypt(text);
-                            }   
-
+                        String metod = exchange.getQueryParameters().get("metod") != null ? exchange.getQueryParameters().get("metod").getFirst() : null;                        
                         
+                        
+                        //Validation 
+                        if (key != null && mode != null && metod != null) {
+                            
+                            exchange.startBlocking();
+                            String data = decoder(exchange.getRequestHeaders().getFirst("data"));
+                            System.err.println(data);
+                            String responseMessage = "wajaka forever";        
+                            
+                            if(metod.equals("p")){  
+
+                                System.err.println("Parallel algorithm");
+                                ParallelBlockEncryption en = new ParallelBlockEncryption(key, 10, 4);  
+                                //Call the algoritm 
+
+                                
+                                if(mode.equals("en")){
+                                    responseMessage = en.Encrypt(data);
+                                }
+                                else if(mode.equals("de"))
+                                {
+                                    responseMessage = en.Decrypt(data);
+                                }   
+
+
+
+                            }else if(metod.equals("s")){
+
+                                //Secuential mode
+                                System.err.println("Secuential");
+                                ParallelBlockEncryption en2 = new ParallelBlockEncryption(key, 10, 1);  
+                                
+                                
+                                if(mode.equals("en")){
+                                    responseMessage = en2.Encrypt(data);
+                                }
+                                else if(mode.equals("de"))
+                                {
+                                    responseMessage = en2.Decrypt(data);
+                                }
+                            }         
+
+
+                            
+                            
+
                             //Request send
                             exchange.getResponseSender().send(responseMessage);
 
@@ -57,7 +89,7 @@ public class App {
                     }
 
 
-                }).build();
+                }).setServerOption(UndertowOptions.MAX_HEADER_SIZE, 900_000).build();
 
 
         server.start();
@@ -77,5 +109,17 @@ public class App {
             e.printStackTrace();
             return "Error leyendo archivo HTML principal: debe estar en src\\resources\\html";
         }
+    }
+
+    private static String decoder(String toDecode) {
+    
+
+        try {
+            String decodedValue = URLDecoder.decode(toDecode, StandardCharsets.UTF_8.toString());
+            return decodedValue;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

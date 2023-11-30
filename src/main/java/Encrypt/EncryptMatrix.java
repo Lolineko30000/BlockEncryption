@@ -16,12 +16,16 @@ public class EncryptMatrix {
         Random rand = new Random(seed);
         float[][] matrix = new float[size][size];
 
+
+        
+
         // Fill the matrix with random integer values
         for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                matrix[i][j] = (float)(rand.nextInt(10) + 1); // Adding 1 to avoid zero values
+            for (int j = 0; j <= i; j++) {
+                matrix[i][j] = (float)(rand.nextInt(5) + 1); // Adding 1 to avoid zero values
             }
         }
+
 
         return matrix;
     }
@@ -35,6 +39,8 @@ public class EncryptMatrix {
     * @return the determinant
     */
     private static float det(float[][] matrix) {
+
+        
         int size = matrix.length;
 
         // Base case: if the matrix is 2x2
@@ -93,11 +99,13 @@ public class EncryptMatrix {
     public static float[][] createEncryptionMatrix(long seed, int matrixSize) {
 
 
-
+        
         float[][] resultMatrix;
         do {
+            
+            
             float[][] matrix = generateMatrix(matrixSize, seed);
-            float det = det(matrix);
+            float det = 1;
 
             // Check if determinant is not divisible by 27
             if (det != 0) {
@@ -105,6 +113,7 @@ public class EncryptMatrix {
             } else {
                 resultMatrix = null;
             }
+        
         } while (resultMatrix == null);
 
 

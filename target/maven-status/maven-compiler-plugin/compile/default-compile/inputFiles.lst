@@ -1,6 +1,6 @@
+/home/lolineko/Documents/CD/concurrente/BlockEncryption/src/main/java/Encrypt/ParallelBlockEncryption.java
 /home/lolineko/Documents/CD/concurrente/BlockEncryption/src/main/java/Encrypt/EncryptMatrix.java
-/home/lolineko/Documents/CD/concurrente/BlockEncryption/src/main/java/Encrypt/BlockEncryption.java
-/home/lolineko/Documents/CD/concurrente/BlockEncryption/src/main/java/Encrypt/LinearTransform.java
+/home/lolineko/Documents/CD/concurrente/BlockEncryption/src/main/java/Encrypt/ParallelLinearTransform.java
 /home/lolineko/Documents/CD/concurrente/BlockEncryption/src/main/java/Encrypt/PublicKeySeed.java
 /home/lolineko/Documents/CD/concurrente/BlockEncryption/src/main/java/App.java
 /home/lolineko/Documents/CD/concurrente/BlockEncryption/src/main/java/Encrypt/PasswordHash.java
