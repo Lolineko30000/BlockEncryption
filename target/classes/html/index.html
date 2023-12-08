@@ -99,6 +99,10 @@
             <textarea id="output_" name="textoSalida" rows="8" placeholder="Result" readonly></textarea>
         </div>
 
+        <div class="form-group">
+            <textarea id="outputTime_" name="teimpoSalida" rows="1" placeholder="Execution time" readonly></textarea>
+        </div>
+
 
 
         <button type="submit" onclick="f(password_.value,option_.value,input_.value,optionmethod_.value )">Submit</button>
@@ -120,7 +124,13 @@
                     
                 })
                 .then(data => {
-                    output_.innerText = data ;
+
+                    console.log(data);
+
+                    js = JSON.parse(data);
+                    output_.innerText = js.data ;
+                    outputTime_.innerText = js.time;
+
                 })
                 .catch(error => {
                     alert(error);  

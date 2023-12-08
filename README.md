@@ -1,6 +1,28 @@
 # BlockEncryption
+-----------
+
+### Final pproject
+
+#### UNAM
+
+####  FES Acatlan
+
+#### Bachelor on data science 
+
+
+By: Segura Diaz Angel Daniel 
+
+Subject: Parallel and distributed computing
+
+
 
 A java implementation of the block encryption algorithm for large files using parallel computing.
+
+
+---------
+---------
+---------
+---------
 
 
 ### Mathematical model 
@@ -90,5 +112,22 @@ If we do not have any errors, we can go to or browser and type the next directio
 Where the algorithm should be running
 
 
+### Advantages of parallel computing 
 
+The point of parallelizing the algorithm is to improve the performance in terms of time complexity. Thahw why it is also posible to select the secuential version, in order to copare both versions. 
 
+Here we are limited by the headers size but if we send the full size of headers, we on average save $30$% of time on average when the text is big enought. 
+
+For a  small size  of thext the paraellel agorithm tend to be worse since it hace to create and stast the threads. 
+
+Here an example of the algorithm encrypting the page of wikipedia about paralle programming using the full size of headers 
+
+> Using secuential 
+
+![Alt text](./img/secuen.png "Diagram secuential")
+
+> Using parallel
+
+![Alt text](./img/parallel.png "Diagram parallel")
+
+Where we can se the $30$% of improvement

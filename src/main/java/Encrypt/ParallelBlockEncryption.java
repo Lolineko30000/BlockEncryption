@@ -15,7 +15,8 @@ public class ParallelBlockEncryption {
     private int numThreads; //number of threads
     private final int maxNumThreads;
     
-    
+    public String executionTime_;
+
     //Constructor
     public ParallelBlockEncryption(String key, int encryptionSize , int maxThreads )
     {
@@ -117,8 +118,8 @@ public class ParallelBlockEncryption {
         double seconds = executionTime / 1000.0;
         
         
-        System.out.println("Execution time: " + seconds + " seconds");
-        System.err.println("=========================================");
+        //System.out.println("Execution time: " + seconds + " seconds");
+        this.executionTime_ = "Execution time: " + seconds + " seconds";
 
         return res;
 

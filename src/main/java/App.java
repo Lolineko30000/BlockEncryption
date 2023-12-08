@@ -32,50 +32,53 @@ public class App {
                         String metod = exchange.getQueryParameters().get("metod") != null ? exchange.getQueryParameters().get("metod").getFirst() : null;                        
                         
                         
+                        
                         //Validation 
                         if (key != null && mode != null && metod != null) {
                             
                             exchange.startBlocking();
                             String data = decoder(exchange.getRequestHeaders().getFirst("data"));
-                            System.err.println(data);
                             String responseMessage = "wajaka forever";        
+                            String info = "";
+                            String executionTime = "";
                             
                             if(metod.equals("p")){  
 
-                                System.err.println("Parallel algorithm");
+                                //System.err.println("Parallel algorithm");
                                 ParallelBlockEncryption en = new ParallelBlockEncryption(key, 10, 4);  
                                 //Call the algoritm 
 
                                 
                                 if(mode.equals("en")){
-                                    responseMessage = en.Encrypt(data);
+                                    info = en.Encrypt(data);
                                 }
                                 else if(mode.equals("de"))
                                 {
-                                    responseMessage = en.Decrypt(data);
+                                    info = en.Decrypt(data);
                                 }   
 
+                                executionTime = en.executionTime_;
 
 
                             }else if(metod.equals("s")){
 
-                                //Secuential mode
-                                System.err.println("Secuential");
+                                
+                                //Only a single thread will execute the full algorithm 
                                 ParallelBlockEncryption en2 = new ParallelBlockEncryption(key, 10, 1);  
                                 
                                 
                                 if(mode.equals("en")){
-                                    responseMessage = en2.Encrypt(data);
+                                    info = en2.Encrypt(data);
                                 }
                                 else if(mode.equals("de"))
                                 {
-                                    responseMessage = en2.Decrypt(data);
+                                    info = en2.Decrypt(data);
                                 }
+                                executionTime = en2.executionTime_;
                             }         
 
+                            responseMessage = "{\"data\":" + "\"" + info + "\"" + ", \"time\":" + "\"" +  executionTime + "\"" + "}";
 
-                            
-                            
 
                             //Request send
                             exchange.getResponseSender().send(responseMessage);

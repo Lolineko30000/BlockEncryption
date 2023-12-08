@@ -105,7 +105,7 @@ public class EncryptMatrix {
             
             
             float[][] matrix = generateMatrix(matrixSize, seed);
-            float det = 1;
+            float det = 1;//det(matrix);
 
             // Check if determinant is not divisible by 27
             if (det != 0) {
