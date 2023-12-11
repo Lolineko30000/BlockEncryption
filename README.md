@@ -70,7 +70,7 @@ The client-side was made with HTML, JavaScript and CSS. Is a simple form for the
 
 The queries for the server have the form 
 
-> http://localhost:8080/?key=[public key]&mode=[enctyption/decryption]&metod=[parallel/secuential]
+> http://localhost:8080/?key=[publickey]&mode=[enctyption/decryption]&metod=[parallel/secuential]
 
 The text is sent bia headers with the name of data so the headers mut have the next format 
 
