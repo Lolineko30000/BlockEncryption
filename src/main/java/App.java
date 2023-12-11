@@ -77,7 +77,7 @@ public class App {
                                 executionTime = en2.executionTime_;
                             }         
 
-                            responseMessage = "{\"data\":" + "\"" + info + "\"" + ", \"time\":" + "\"" +  executionTime + "\"" + "}";
+                            responseMessage = info  + "___time___" + executionTime;
 
 
                             //Request send

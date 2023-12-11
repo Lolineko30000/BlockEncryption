@@ -125,11 +125,10 @@
                 })
                 .then(data => {
 
-                    console.log(data);
-
-                    js = JSON.parse(data);
-                    output_.innerText = js.data ;
-                    outputTime_.innerText = js.time;
+                    
+                    var aux = data.split("___time___");
+                    output_.innerText = aux[0] ;
+                    outputTime_.innerText = aux[1];
 
                 })
                 .catch(error => {
