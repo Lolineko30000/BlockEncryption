@@ -1,21 +1,3 @@
-# BlockEncryption
------------
-
-### Final pproject
-
-#### UNAM
-
-####  FES Acatlan
-
-#### Bachelor on data science 
-
-
-By: Segura Diaz Angel Daniel 
-
-Subject: Parallel and distributed computing
-
-
-
 A java implementation of the block encryption algorithm for large files using parallel computing.
 
 
