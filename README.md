@@ -20,8 +20,6 @@ The matrix $A$ must not be $mod(|A|) \equiv  (0)mod (k)$ so we guarantee the inf
 In general the algorithm follows the next diagram.
 
 
-![Alt text](./img/diagram.png "Diagram")
-
 
 For the matrix dimension, a small number [10, 30] should be better hence it wont produce larger entries in the resultant vecotor. By default the dimension is 10, then the matrix $A$ is of the form $A \in \mathbb{M}_{10 \times 10}(\mathbb{Z})$
 
